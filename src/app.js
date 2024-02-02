@@ -43,5 +43,5 @@ document.addEventListener("mousemove", async (e) => {
   let res = await database
     .from("sensors")
     .update({ values: { x: e.clientX, y: e.clientY }, updated_at: new Date() })
-    .eq("id", 123);
+    .eq("id", 1);
 });
