@@ -3,12 +3,8 @@ const key =
 const url = "https://gulgmnxeohrsiwkhqjhr.supabase.co";
 const database = supabase.createClient(url, key);
 
-
 document.addEventListener("DOMContentLoaded", async () => {
-
-
-
-	database
+  database
     .channel("sensors")
     .on(
       "postgres_changes",
@@ -43,13 +39,11 @@ document.addEventListener("mousemove", async (e) => {
     .eq("id", 123);
 });
 
-
 // const container = document.querySelector("#container");
 // const key =
 //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1bGdtbnhlb2hyc2l3a2hxamhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4Nzk3NzcsImV4cCI6MjAyMjQ1NTc3N30.Z-F8w3dOtmnUXBtCBx07qw7AY86WCZzk7hFsKVeJejk";
 // const url = "https://gulgmnxeohrsiwkhqjhr.supabase.co";
 // const database = supabase.createClient(url, key);
-
 
 // //Document is ready
 // document.addEventListener("DOMContentLoaded", async () => {
@@ -70,5 +64,3 @@ document.addEventListener("mousemove", async (e) => {
 // const handleInserts = (payload) => {
 //   console.log("Change received!", payload);
 // };
-
-
