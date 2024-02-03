@@ -33,13 +33,12 @@ function getAccel() {
           vy = 0;
         }
 
-        dot = document.getElementsByClassName("indicatorDot")[0];
+        dot = document.getElementsByClassName("dot")[0];
         dot.setAttribute("style", "left:" + px + "%;" + "top:" + py + "%;");
       });
     }
   });
 }
-
 // const key =
 //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1bGdtbnhlb2hyc2l3a2hxamhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4Nzk3NzcsImV4cCI6MjAyMjQ1NTc3N30.Z-F8w3dOtmnUXBtCBx07qw7AY86WCZzk7hFsKVeJejk";
 // const url = "https://gulgmnxeohrsiwkhqjhr.supabase.co";
