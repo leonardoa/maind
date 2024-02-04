@@ -1,10 +1,42 @@
-var px = 50; // Position x and y
-var py = 50;
-var vx = 0.0; // Velocity x and y
-var vy = 0.0;
-var updateRate = 1 / 60; // Sensor refresh rate
+const key =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd1bGdtbnhlb2hyc2l3a2hxamhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDY4Nzk3NzcsImV4cCI6MjAyMjQ1NTc3N30.Z-F8w3dOtmnUXBtCBx07qw7AY86WCZzk7hFsKVeJejk";
+const url = "https://gulgmnxeohrsiwkhqjhr.supabase.co";
+const database = supabase.createClient(url, key);
 
-function getAccel() {
+//dom elements
+const contentX = document.getElementById("x");
+const contentY = document.getElementById("y");
+const contentTime = document.getElementById("time");
+const contentId = document.getElementById("id");
+const contentAlpha = document.getElementById("alpha");
+const contentBeta = document.getElementById("beta");
+const contentGamma = document.getElementById("gamma");
+
+let px = 50; // Position x and y
+let py = 50;
+let vx = 0.0; // Velocity x and y
+let vy = 0.0;
+let updateRate = 1 / 60; // Sensor refresh rate
+
+document.addEventListener("DOMContentLoaded", async () => {
+  database
+    .channel("sensors")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "sensors" },
+      (payload) => {
+        handleInserts(payload.new);
+      }
+    )
+    .subscribe();
+
+  //select all data from sensors
+  let { data, error } = await database.from("sensors").select("*");
+  console.log(data);
+  handleInserts(data[0]);
+});
+
+async function getAccel() {
   DeviceMotionEvent.requestPermission().then((response) => {
     if (response == "granted") {
       // Add a listener to get smartphone orientation
@@ -35,7 +67,39 @@ function getAccel() {
 
         dot = document.getElementsByClassName("dot")[0];
         dot.setAttribute("style", "left:" + px + "%;" + "top:" + py + "%;");
+
+        handleInserts(
+          px,
+          py,
+          new Date(),
+          1,
+          rotation_degrees,
+          frontToBack_degrees,
+          leftToRight_degrees
+        );
       });
     }
   });
+  let res = await database
+    .from("sensors")
+    .update({ values: { x: e.clientX, y: e.clientY }, updated_at: new Date() })
+    .eq("id", 1);
 }
+
+function handleInserts(x, y, time, id, alpha, beta, gamma) {
+  //update dom elements
+  contentX.innerHTML = x;
+  contentY.innerHTML = y;
+  contentTime.innerHTML = time;
+  contentId.innerHTML = id;
+  contentAlpha.innerHTML = rotation_degrees;
+  contentBeta.innerHTML = frontToBack_degrees;
+  contentGamma.innerHTML = leftToRight_degrees;
+}
+
+// document.addEventListener("mousemove", async (e) => {
+//   let res = await database
+//     .from("sensors")
+//     .update({ values: { x: e.clientX, y: e.clientY }, updated_at: new Date() })
+//     .eq("id", 1);
+// });
