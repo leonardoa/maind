@@ -11,28 +11,32 @@ const contentId = document.getElementById("id");
 const contentAlpha = document.getElementById("alpha");
 const contentBeta = document.getElementById("beta");
 const contentGamma = document.getElementById("gamma");
-
+const id = 1;
 let px = 50; // Position x and y
 let py = 50;
 let vx = 0.0; // Velocity x and y
 let vy = 0.0;
 let updateRate = 1 / 60; // Sensor refresh rate
-
+let tableName = "accelerometer";
 document.addEventListener("DOMContentLoaded", async () => {
+  //subscribe to changes in the
   database
-    .channel("sensors")
+    .channel(tableName)
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "sensors" },
+      { event: "*", schema: "public", table: tableName },
       (payload) => {
-        handleInserts(payload.new);
+        // handleInserts(payload.new);
+        console.log(payload.new);
       }
     )
     .subscribe();
 
   //select all data from sensors
-  let { data, error } = await database.from("sensors").select("*");
-  console.log(data);
+  let { data, error } = await database.from(tableName).select("*");
+  console.log(data[0]);
+
+  //send the first data to the dom
   handleInserts(data[0]);
 });
 
@@ -68,33 +72,44 @@ async function getAccel() {
         dot = document.getElementsByClassName("dot")[0];
         dot.setAttribute("style", "left:" + px + "%;" + "top:" + py + "%;");
 
-        handleInserts(
-          px,
-          py,
-          new Date(),
-          1,
-          rotation_degrees,
-          frontToBack_degrees,
-          leftToRight_degrees
-        );
+        contentX.innerHTML = px;
+        contentY.innerHTML = py;
+        contentTime.innerHTML = new Date();
+        contentId.innerHTML = id;
+        contentAlpha.innerHTML = rotation_degrees;
+        contentBeta.innerHTML = frontToBack_degrees;
+        contentGamma.innerHTML = leftToRight_degrees;
+
+        updateSupabase(px, py, rotation_degrees, frontToBack_degrees, leftToRight_degrees);
       });
     }
   });
-  let res = await database
-    .from("sensors")
-    .update({ values: { x: e.clientX, y: e.clientY }, updated_at: new Date() })
-    .eq("id", 1);
 }
 
-function handleInserts(x, y, time, id, alpha, beta, gamma) {
+async function updateSupabase(px, py, rotation_degrees, frontToBack_degrees, leftToRight_degrees) {
+  let res = await database
+    .from(tableName)
+    .update({
+      values: {
+        x: px,
+        y: py,
+        alpha: rotation_degrees,
+        beta: frontToBack_degrees,
+        gamma: leftToRight_degrees,
+      },
+      updated_at: new Date(),
+    })
+    .eq("id", id);
+}
+function handleInserts(data) {
   //update dom elements
-  contentX.innerHTML = x;
-  contentY.innerHTML = y;
-  contentTime.innerHTML = time;
-  contentId.innerHTML = id;
-  contentAlpha.innerHTML = rotation_degrees;
-  contentBeta.innerHTML = frontToBack_degrees;
-  contentGamma.innerHTML = leftToRight_degrees;
+  // contentX.innerHTML = data.x;
+  // contentY.innerHTML = data.y;
+  // contentTime.innerHTML = data.time;
+  // contentId.innerHTML = id;
+  // contentAlpha.innerHTML = data.alpha;
+  // contentBeta.innerHTML = data.beta;
+  // contentGamma.innerHTML = data.gamma;
 }
 
 // document.addEventListener("mousemove", async (e) => {
