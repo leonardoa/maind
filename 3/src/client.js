@@ -5,6 +5,7 @@ const database = supabase.createClient(url, key);
 
 //dom elements
 const distance = document.getElementById("distance");
+const rotation = document.getElementById("rotation");
 const tableName = "touch";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -27,6 +28,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function handleInserts(data) {
   distance.innerHTML = data.values.distance;
+  rotation.innerHTML = data.values.rotation;
   const rect = document.getElementById("rect");
   rect.style.width = data.values.distance + "px";
+  rect.style.transform = `rotate(${data.values.rotation}deg)`;
 }

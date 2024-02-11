@@ -1,5 +1,6 @@
 const drawingArea = document.getElementById("drawingArea");
 const distanceOutput = document.getElementById("distanceOutput");
+const rotationOutput = document.getElementById("rotationOutput");
 const lineSvg = document.getElementById("lineSvg");
 
 const tableName = "touch";
@@ -34,7 +35,12 @@ function updateLine() {
       touchPoints[1].style.top.replace("px", "");
     const distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     distanceOutput.textContent = distance.toFixed(2);
-    updateSupabase(distance.toFixed(2));
+
+    const rotation = Math.atan2(yDiff, xDiff);
+    const rotationDeg = rotation * (180 / Math.PI);
+    rotationOutput.textContent = rotationDeg.toFixed(2);
+
+    updateSupabase(distance.toFixed(2), rotationDeg.toFixed(2));
   } else {
     if (line) {
       lineSvg.removeChild(line);
@@ -110,12 +116,13 @@ drawingArea.addEventListener(
   { passive: false }
 );
 
-async function updateSupabase(distance) {
+async function updateSupabase(distance, rotation) {
   let res = await database
     .from(tableName)
     .update({
       values: {
         distance: distance,
+        rotation: rotation,
       },
       updated_at: new Date(),
     })
