@@ -1,11 +1,11 @@
-let food = "pizza";
+let food = "pasta";
 if (food == "pizza") {
   console.log("Yum!");
 } else {
   console.log("No thanks!");
 }
 
-let number = 6;
+let number = 1000;
 if (number > 5 && number < 7) {
   console.log("Greater than 5 && Less than 7");
 } else if (number > 7 && number <= 9) {

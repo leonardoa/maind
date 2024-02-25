@@ -7,7 +7,7 @@ let container = document.querySelector("#container");
 let img = document.querySelector("#img");
 
 //number of images
-let numOfImages = 10;
+let numOfImages = 7;
 
 //window size
 let windowWidth = window.innerWidth;
